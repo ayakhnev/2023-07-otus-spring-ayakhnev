@@ -38,17 +38,20 @@ public class QuizConsoleService {
 
     private void printQuestion(QuestionDao question) {
         StringBuilder queryStr = new StringBuilder();
-        queryStr.append("Question №").append(question.getNumber()).append(" \"").append(question.getQuestion()).append("\"").append("\n");
-        queryStr.append("Response options: ");
-        boolean isFirst = true;
-        for (String answer : question.getAnswers()) {
-            if (!isFirst){
-                queryStr.append(", ");
+        queryStr.append("Question №").append(question.getNumber()).append(" \"").append(question.getQuestion())
+                .append("\"");
+        if (!question.getAnswers().isEmpty()) {
+            queryStr.append("\n").append("Response options: ");
+            boolean isFirst = true;
+            for (String answer : question.getAnswers()) {
+                if (!isFirst) {
+                    queryStr.append(", ");
+                }
+                queryStr.append(answer);
+                isFirst = false;
             }
-            queryStr.append(answer);
-            isFirst = false;
         }
-        System.out.println(queryStr);
+        System.out.println(queryStr.append("\n"));
     }
 
     private void printContinue() {

@@ -16,24 +16,11 @@ public class CsvReaderService {
         List<String> fileNameList = new ArrayList<>();
         fileNameList.add(questionFileName);
         List<QuestionDao> questionList = new ArrayList<>();
-
         for (String fileName : fileNameList) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fileName)))) {
+            try (BufferedReader reader =
+                         new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fileName)))) {
                 while ((line = reader.readLine()) != null) {
-                    try (Scanner scanner = new Scanner(line)) {
-                        scanner.useDelimiter(";");
-                        int indexInLine = 0;
-
-                        QuestionDao item = new QuestionDao();
-                        questionList.add(item);
-                        while (scanner.hasNext()) {
-                            String data = scanner.next();
-                            setQuestionParams(item, indexInLine, data);
-                            indexInLine++;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    setQuestionParamsInList(line, questionList);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -42,7 +29,28 @@ public class CsvReaderService {
         return questionList;
     }
 
-    private void setQuestionParams(QuestionDao item, int indexInLine, String data){
+    private void setQuestionParamsInList(String fileLine, List<QuestionDao> questionList) {
+        try (Scanner scanner = new Scanner(fileLine)) {
+            QuestionDao questionDao = getQuestionDaoFromFileLine(scanner);
+            questionList.add(questionDao);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private QuestionDao getQuestionDaoFromFileLine(Scanner scanner) {
+        scanner.useDelimiter(";");
+        int indexInLine = 0;
+        QuestionDao item = new QuestionDao();
+        while (scanner.hasNext()) {
+            String data = scanner.next();
+            addInfoToQuestion(item, indexInLine, data);
+            indexInLine++;
+        }
+        return item;
+    }
+
+    private void addInfoToQuestion(QuestionDao item, int indexInLine, String data) {
         switch (indexInLine) {
             case 0 -> {
                 item.setNumber(Integer.parseInt(data));
@@ -52,7 +60,7 @@ public class CsvReaderService {
             }
             case 2 -> {
                 String[] answersArr = data.trim().split(",");
-                if (answersArr.length > 0) {
+                if (answersArr.length > 0 && !answersArr[0].trim().isEmpty()) {
                     item.setAnswers(Arrays.asList(answersArr));
                 } else {
                     item.setAnswers(new ArrayList<>());
