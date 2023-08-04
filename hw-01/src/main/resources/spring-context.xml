@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="csvReader" class="ru.otus.ayakhnev.service.CsvReaderService">
+
+    </bean>
+
+    <bean id="quizConsoleService" class="ru.otus.ayakhnev.service.QuizConsoleService">
+        <constructor-arg ref="csvReader"/>
+        <constructor-arg value="/questions.csv"/>
+    </bean>
+</beans>
