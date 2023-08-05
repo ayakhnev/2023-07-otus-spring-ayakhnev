@@ -1,68 +1,43 @@
 package ru.otus.ayakhnev.service;
 
 
-import ru.otus.ayakhnev.domain.QuestionDao;
-
-import java.util.List;
+import ru.otus.ayakhnev.domain.Question;
 
 public class QuizConsoleService {
 
-    private boolean isStop = true;
-
     private final CsvReaderService csvReaderService;
 
-
-    /**
-     * Сформированный список вопросов
-     */
-    private final List<QuestionDao> questList;
+    private final String questionFileNameConstr;
 
 
 
-    public QuizConsoleService(CsvReaderService csvReaderServiceConstr, String questionFileNameConstr) {
+    public QuizConsoleService(CsvReaderServiceImpl csvReaderServiceConstr, String questionFileNameConstr) {
         this.csvReaderService = csvReaderServiceConstr;
-        this.questList = this.csvReaderService.readQuiz(questionFileNameConstr);
+        this.questionFileNameConstr = questionFileNameConstr;
     }
 
     public void runQuiz() {
+        printStart();
+        this.csvReaderService.readQuiz(questionFileNameConstr);
         printWelcome();
-        for (QuestionDao question : questList) {
-            this.printQuestion(question);
+        for (Question question : csvReaderService.getQuestions()) {
+            question.printQuestion();
+            question.printAnswers();
         }
+    }
+
+    public void clearQuiz() {
+        this.csvReaderService.clearQuestions();
     }
 
     private void printWelcome() {
-        System.out.println(" ********************************** QUIZ ********************************* ");
         System.out.println("Hi! You have launched a testing system. System issues:");
     }
 
-    private void printQuestion(QuestionDao question) {
-        StringBuilder queryStr = new StringBuilder();
-        queryStr.append("Question №").append(question.getNumber()).append(" \"").append(question.getQuestion())
-                .append("\"");
-        if (!question.getAnswers().isEmpty()) {
-            queryStr.append("\n").append("Response options: ");
-            boolean isFirst = true;
-            for (String answer : question.getAnswers()) {
-                if (!isFirst) {
-                    queryStr.append(", ");
-                }
-                queryStr.append(answer);
-                isFirst = false;
-            }
-        }
-        System.out.println(queryStr.append("\n"));
+    private void printStart() {
+        System.out.println(" ********************************** QUIZ ********************************* ");
+        System.out.println("Start Quiz, pleas wait");
     }
 
-    private void printContinue() {
-        System.out.println("Continue? If yes, enter \"y\". If not, enter \"n\".");
-    }
 
-    private void printBye() {
-        System.out.println("You have answered all the questions. The result will be reported to you.");
-    }
-
-    private void printExit() {
-        System.out.println("Bye!");
-    }
 }
