@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface Question {
 
-    void readQuestion(String questionLine);
 
     void printQuestion();
 
@@ -12,9 +11,17 @@ public interface Question {
 
     int getNumber();
 
+    void setNumber(int number);
+
     String getQuestion();
+
+    void  setQuestion(String question);
 
     List<String> getAnswers();
 
+    void setAnswers(List<String> answers);
+
     String getRightAnswer();
+
+    void setRightAnswer(String rightAnswer);
 }

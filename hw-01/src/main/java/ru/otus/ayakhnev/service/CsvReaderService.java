@@ -12,4 +12,6 @@ public interface CsvReaderService {
     void setQuestions(List<Question> questionList);
 
     void clearQuestions();
+
+    void addQuestion(String questionLine);
 }
